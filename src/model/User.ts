@@ -1,9 +1,18 @@
 import { Schema, model } from 'mongoose';
 
 const User = new Schema({
-	name: String,
-	password: String,
-	email: String,
+	name: {
+		type: String,
+		required:  true
+	},
+	password: {
+		type: String,
+		required:  true
+	},
+	email: {
+		type: String,
+		required:  true
+	},
 	birthday: {
 		type: Schema.Types.Date
 	},
@@ -18,7 +27,7 @@ const User = new Schema({
 	booking: [{
 		type: Schema.Types.ObjectId,
 		ref: "Booking"
-	}],
+	}]
 });
 
 export default model('User', User);

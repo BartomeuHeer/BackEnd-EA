@@ -11,25 +11,19 @@ const register = async (req: Request, res: Response) => {
 	password = CryptoJS.AES.encrypt(password, 'secret key 123').toString();
 	const newUser = new User({ name, email, password });
 	await newUser.save();
-	const token = jwt.sign({ id: newUser._id }, 'yyt#KInN7Q9X3m&$ydtbZ7Z4fJiEtA6uHIFzvc@347SGHAjV4E', {
-		expiresIn: 60 * 60 * 24
-	});
-	res.status(200).json({ auth: true, token });
+	res.status(200).json(newUser);
 };
 
 const login = async (req: Request, res : Response) => {
 	const user = await User.findOne({ email: req.body.email });
 	if (!user) {
-		return res.status(404).send('The email does not exist');
+		return res.status(404).json({ message: 'User not found' });
 	}
-	// const validPassword = CryptoJS.AES.decrypt(user.password!, 'secret key 123').toString(CryptoJS.enc.Utf8);
-	/* if (!validPassword) {
-		return res.status(401).json({ auth: false, token: null });
+	const validPassword = CryptoJS.AES.decrypt(user.password!, 'secret key 123').toString(CryptoJS.enc.Utf8);
+	if (validPassword !== req.body.password) {
+		return res.status(404).json({ message: 'User not found' });
 	}
-	 */const token = jwt.sign({ id: user._id }, 'yyt#KInN7Q9X3m&$ydtbZ7Z4fJiEtA6uHIFzvc@347SGHAjV4E', {
-		expiresIn: 60 * 60 * 24
-	});
-	res.json({ auth: true, token });
+	res.status(200).json({ user });
 };
 const newRating = async (req: Request, res: Response) => {
 	const author = req.body.author;
@@ -83,7 +77,7 @@ const changePass = async (req: Request, res: Response) => {
 	}
 	else{
 		res.json({ status: 'Wrong password' });
-	} 
+	}
 };
 
 
