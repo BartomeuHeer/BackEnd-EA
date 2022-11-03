@@ -25,6 +25,7 @@ const login = async (req: Request, res : Response) => {
 	}
 	res.status(200).json({ user });
 };
+
 const newRating = async (req: Request, res: Response) => {
 	const author = req.body.author;
 	const comment = req.body.comment;
@@ -41,6 +42,15 @@ const newRating = async (req: Request, res: Response) => {
 
 	res.status(200);
 };
+
+const deleteOne = async (req: Request, res: Response) => {
+	const user = await User.findByIdAndDelete(req.params.id);
+	if(!user){
+		return res.status(404).send('No user found')
+	}
+	return res.status(200).json(user);
+}
+
 const profile = async (req: Request, res: Response) => {
 	const user = await User.findById(req.params.userId, { password: 0 });
 	if (!user) {
@@ -90,5 +100,6 @@ export default {
 	getone,
 	changePass,
 	getRatings,
-	newRating
+	newRating,
+	deleteOne
 };

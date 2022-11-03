@@ -27,7 +27,11 @@ const User = new Schema({
 	booking: [{
 		type: Schema.Types.ObjectId,
 		ref: "Booking"
-	}]
+	}],
+	vehicle: {
+		type: Schema.Types.ObjectId,
+		ref: "Vehicle"
+	}
 });
 
 export default model('User', User);
