@@ -15,9 +15,9 @@ const getBooking = async (req: Request, res: Response) => {
 
 const cancelBooking = async (req: Request, res: Response) => {
 
-	const cancel = await Booking.findByIdAndRemove(req.params._id);
+	const cancel = await Booking.findByIdAndRemove(req.params.id);
 	if(!cancel){
-		return res.status(404).json("Booking not found o millor Can't remove something that doesn't exist")
+		return res.status(404).json("Can't remove something that doesn't exist")
 	}
 	res.json({cancel}).status(200)
 
@@ -34,7 +34,7 @@ const cancelBooking = async (req: Request, res: Response) => {
 
 const getAll = async (req: Request, res: Response) => {
 
-	const bookings = await Booking.find
+	const bookings = await Booking.find();
 	// const bookings = await Booking.find().populate('user'); // No entenc pq serveix aixo de populate pero
 	// serveix per obtenir només un booking
 	res.json(bookings);
@@ -69,13 +69,17 @@ const createBooking = async (req:Request, res: Response) => {
 		}
 	} */
 	const selectedStopPoint = new Point({ name: req.body.selectedStopPoint});
-	const newBooking = {route,user,price,selectedStopPoint}
-	const booking = new Booking(newBooking);
-	await booking.save();
-	user?.booking.push(booking._id);
-	await user?.save();
-	route?.participants.push(user._id);
-	await route?.save();
+	const booking = new Booking({route,user,price,selectedStopPoint});
+	try{
+		await booking.save();
+		user?.booking.push(booking._id);
+		await user?.save();
+		route?.participants.push(user._id);
+		await route?.save();
+	}
+	catch(err){
+		return res.json(res).status(500);
+	}
 
 	return res.json({message: "Booking created",booking}).status(200);
 

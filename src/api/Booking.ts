@@ -3,7 +3,7 @@ import { Router } from 'express';
 
 const router = Router();
 
-router.get('/booking/:_id', bookingController.getBooking); // No entenc diferencia _id i id
+router.get('/booking/:id', bookingController.getBooking); // No entenc diferencia _id i id
 router.delete('/cancel/:id', bookingController.cancelBooking);
 router.get('/', bookingController.getAll);
 
