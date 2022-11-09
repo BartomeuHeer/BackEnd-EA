@@ -6,25 +6,25 @@ const Route = new Schema({
 	name: String,
     creator:{
         type: Schema.Types.ObjectId,
-        ref: User,
+        ref: "User"
     },
     participants: [{
         type: Schema.Types.ObjectId,
-        ref: User,
+        ref: "User"
     }],
     startPoint: {
         type: Schema.Types.ObjectId,
-        ref: Point,
+        ref: "Point"
     },
     endPoint: {
         type: Schema.Types.ObjectId,
-        ref: Point,
+        ref: "Point"
     },
     stopPoint: [{
         type: Schema.Types.ObjectId,
-        ref: Point,
+        ref: "Point"
     }],
-	dateOfEntry: Date
+	dateOfBeggining: Date
 
 });
 

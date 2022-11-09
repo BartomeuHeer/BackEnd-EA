@@ -3,19 +3,27 @@ import Route from '../model/Route';
 import Point from '../model/Point';
 import jwt from 'jsonwebtoken';
 import { Request, Response } from 'express';
+import User from '../model/User';
+import { exec } from 'child_process';
 
 // CREATE NEW ROUTE
 
 const create = async (req: Request, res: Response) => {
 	const name = req.body.name;
-	const creator = req.body.creator;
-	const participants = req.body.participants;
-	const startPoint = req.body.startPoint;
-	const endPoint = req.body.endPoint;
-	const stopPoint = req.body.stopPoint;
-	const newRoute = new Route({ name,creator,participants,startPoint, endPoint, stopPoint});
+
+	const creator = await User.findOne({name: req.body.creator});
+	// const participants = req.body.participants;
+	const startPoint = new Point({name: req.body.startPoint});
+	const endPoint = new Point({name: req.body.endPoint});
+	const stopPoint = [new Point({name: req.body.stopPoint})];
+	const dateOfBeggining = req.body.date;
+	const newRoute = new Route({ name,creator,startPoint, endPoint, stopPoint, dateOfBeggining});
+
 	await newRoute.save();
-	res.status(200).json( "Route created" );
+	creator?.route.push(newRoute._id);
+	creator?.save();
+	// await newRoute.save();
+	res.status(200).json( {message: "Route created", newRoute} );
 };
 
 // PUT NEW POINT INTO A ROUTE
@@ -75,7 +83,7 @@ const getAllPoints = async (req: Request, res: Response) => {
 // GET A ROUTE BY ID
 
 const getRoute = async (req: Request, res: Response) => {
-	const route = await Route.findById(req.params.id).populate('user');
+	const route = await Route.findById(req.params.id);
 	res.json(route);
 };
 
@@ -120,5 +128,6 @@ export default{
 	getAllRoutes,
 	getAllPoints,
 	updateRoute,
-	deleteRoute
+	deleteRoute,
+	getRoute
 };

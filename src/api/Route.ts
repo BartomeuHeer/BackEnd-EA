@@ -7,8 +7,9 @@ router.post('/create', routeController.create);
 router.post('/:id/newStopPoint', routeController.newStopPoint);
 router.post('/:id/newParticipant', routeController.newParticipant);
 router.get('/:id/getAllParticipants/',routeController.getAllParticipants);
-router.post('/',routeController.getAllRoutes);
+router.get('/',routeController.getAllRoutes);
 router.get('/:id/getAllPoints',routeController.getAllPoints);
+router.get('/:id/',routeController.getRoute);
 router.put('/:id/gupdateRoute',routeController.updateRoute);
 router.delete('/:id/deleteRoute',routeController.deleteRoute);
 

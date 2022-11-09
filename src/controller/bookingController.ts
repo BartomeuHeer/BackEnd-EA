@@ -1,6 +1,8 @@
 import Booking from '../model/Booking';
 import User from '../model/User';
 import { Request, Response } from 'express';
+import Route from '../model/Route';
+import Point from '../model/Point';
 
 const getBooking = async (req: Request, res: Response) => {
 	const booking = await Booking.findById(req.params._id);
@@ -38,25 +40,44 @@ const getAll = async (req: Request, res: Response) => {
 	res.json(bookings);
 };
 
+function subtractHours(date:Date, hours: number) {
+	date.setHours(date.getHours() - hours);
+
+	return date;
+  }
+
+
 const createBooking = async (req:Request, res: Response) => {
-	const { route, user, dayOfCreation, price, cancelPolicy, selectedStopPoint} = req.body;
-	const newBooking = {
+	const route = await Route.findById(req.body.route);
+	const user = await User.findOne({name: req.body.userName});
+	if(!user || !route){
+		return res.json(user).status(404);
+	}
+	const price = req.body.price;
+	/* const cancelPolicy = {
+		completeRefound: {
+			maxCancelDate: subtractHours(route.dateOfBeggining, 3),
+			pirceRefound: price
+		},
+		halfRefound: {
+			maxCancelDate: subtractHours(route.dateOfBeggining, 2),
+			pirceRefound: price * 0.5
+		},
+		noRefound: {
+			maxCancelDate: subtractHours(route.dateOfBeggining, 1),
+			pirceRefound: 0
+		}
+	} */
+	const selectedStopPoint = new Point({ name: req.body.selectedStopPoint});
+	const newBooking = {route,user,price,selectedStopPoint}
+	const booking = new Booking(newBooking);
+	await booking.save();
+	user?.booking.push(booking._id);
+	await user?.save();
+	route?.participants.push(user._id);
+	await route?.save();
 
-
-		route,
-		user,
-		dayOfCreation,
-		price,
-		cancelPolicy,
-		selectedStopPoint
-	  }
-	  const booking = new Booking(newBooking);
-	  await booking.save();
-
-	  return res.json({
-		message: "Booking created",
-		booking
-	  });
+	return res.json({message: "Booking created",booking}).status(200);
 
 }
 const updateBooking = async (req: Request, res: Response) => {

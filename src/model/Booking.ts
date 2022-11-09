@@ -1,7 +1,10 @@
 import { Schema, model } from 'mongoose';
 
 const Booking = new Schema({
-	route: { type: Schema.Types.ObjectId, ref: "Route"},
+	route: {
+		type: Schema.Types.ObjectId,
+		ref: "Route"
+	},
 	user: {
 		type: Schema.Types.ObjectId,
 		ref: "User"
@@ -10,16 +13,16 @@ const Booking = new Schema({
 	price: Number,
 	cancelPolicy:{
 		completRefund:{
-			cancelDate: Date,
-			cancelPrice: Number
+			maxCancelDate: Date,
+			pirceRefound: Number
 		},
 		halfRefund: {
-			cancelDate: Date,
-			cancelPrice: Number
+			maxCancelDate: Date,
+			pirceRefound: Number
 		},
 		noRefund:{
-			cancelDate: Date,
-			cancelPrice: Number
+			maxCancelDate: Date,
+			pirceRefound: Number
 		}
 	},
 	selectedStopPoint:{type: Schema.Types.ObjectId, ref: "Point"}
