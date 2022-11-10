@@ -12,12 +12,12 @@ const create = async (req: Request, res: Response) => {
 	const name = req.body.name;
 
 	const creator = await User.findOne({name: req.body.creator});
-	// const participants = req.body.participants;
+	const participants = [req.body.participants];
 	const startPoint = new Point({name: req.body.startPoint});
 	const endPoint = new Point({name: req.body.endPoint});
 	const stopPoint = [new Point({name: req.body.stopPoint})];
 	const dateOfBeggining = req.body.date;
-	const newRoute = new Route({ name,creator,startPoint, endPoint, stopPoint, dateOfBeggining});
+	const newRoute = new Route({ name,creator,participants, startPoint, endPoint, stopPoint, dateOfBeggining});
 
 	await newRoute.save();
 	// creator?.route.push(newRoute._id);
