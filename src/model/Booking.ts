@@ -25,7 +25,7 @@ const Booking = new Schema({
 			pirceRefound: Number
 		}
 	},
-	selectedStopPoint:{type: Schema.Types.ObjectId, ref: "Point"}
+	selectedStopPoint:String
 });
 
 export default model('Booking', Booking);

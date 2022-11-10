@@ -5,16 +5,7 @@ import Route from '../model/Route';
 import Point from '../model/Point';
 
 const getBooking = async (req: Request, res: Response) => {
-	const booking = await Booking.findById(req.params.id).populate('user').populate('selectedStopPoint').
-	populate({
-		path : 'route',
-		populate :[
-			{ path : 'startPoint'},
-			{ path : 'participants'},
-			{ path : 'endPoint'},
-			{ path : 'creator'},
-		]}).
-		exec();
+	const booking = await Booking.findById(req.params.id).populate('user').populate('route')
 	res.json({booking}).status(200)
 
 };
@@ -54,7 +45,7 @@ function subtractHours(date:Date, hours: number) {
 
 
 const createBooking = async (req:Request, res: Response) => {
-	const route = await Route.findById(req.body.route);
+	const route = await Route.findOne({name:req.body.route});
 	const user = await User.findOne({name: req.body.userName});
 	if(!user || !route){
 		return res.json(user).status(404);
@@ -74,13 +65,13 @@ const createBooking = async (req:Request, res: Response) => {
 			pirceRefound: 0
 		}
 	} */
-	const selectedStopPoint = new Point({ name: req.body.selectedStopPoint});
+	const selectedStopPoint = req.body.selectedStopPoint;
 	const booking = new Booking({route,user,price,selectedStopPoint});
 	try{
 		await booking.save();
-		// user?.booking.push(booking._id);
+		user?.booking.push(booking._id);
 		await user?.save();
-		// route?.participants.push(user._id);
+		route?.participants.push(user._id);
 		await route?.save();
 	}
 	catch(err){
