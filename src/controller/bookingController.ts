@@ -5,10 +5,16 @@ import Route from '../model/Route';
 import Point from '../model/Point';
 
 const getBooking = async (req: Request, res: Response) => {
-	const booking = await Booking.findById(req.params._id);
-	if(!booking){
-		return res.status(404).json("User not found")
-	}
+	const booking = await Booking.findById(req.params.id).populate('user').populate('selectedStopPoint').
+	populate({
+		path : 'route',
+		populate :[
+			{ path : 'startPoint'},
+			{ path : 'participants'},
+			{ path : 'endPoint'},
+			{ path : 'creator'},
+		]}).
+		exec();
 	res.json({booking}).status(200)
 
 };
@@ -34,7 +40,7 @@ const cancelBooking = async (req: Request, res: Response) => {
 
 const getAll = async (req: Request, res: Response) => {
 
-	const bookings = await Booking.find();
+	const bookings = await Booking.find().populate('user').populate('route');
 	// const bookings = await Booking.find().populate('user'); // No entenc pq serveix aixo de populate pero
 	// serveix per obtenir només un booking
 	res.json(bookings);
