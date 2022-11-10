@@ -12,12 +12,12 @@ const create = async (req: Request, res: Response) => {
 	const name = req.body.name;
 
 	const creator = await User.findOne({name: req.body.creator});
-	const participants = [req.body.participants];
-	const startPoint = new Point({name: req.body.startPoint});
-	const endPoint = new Point({name: req.body.endPoint});
-	const stopPoint = [new Point({name: req.body.stopPoint})];
-	const dateOfBeggining = req.body.date;
-	const newRoute = new Route({ name,creator,participants, startPoint, endPoint, stopPoint, dateOfBeggining});
+	// const participants = [req.body.participants];
+	const startPoint = req.body.startPoint;
+	const endPoint = req.body.endPoint;
+	const stopPoint = [req.body.stopPoint];
+	const dateOfBeggining = req.body.dateOfBeggining;
+	const newRoute = new Route({ name,creator, startPoint, endPoint, stopPoint, dateOfBeggining});
 
 	await newRoute.save();
 	creator?.route.push(newRoute._id);
@@ -61,7 +61,7 @@ const newParticipant = async (req: Request, res: Response) => {
 // GET ALL ROUTES
 
 const getAllRoutes = async (req: Request, res: Response) => {
-	const routes = await Route.find();
+	const routes = await Route.find().populate('creator');
 	res.json(routes);
 };
 
@@ -83,7 +83,7 @@ const getAllPoints = async (req: Request, res: Response) => {
 // GET A ROUTE BY ID
 
 const getRoute = async (req: Request, res: Response) => {
-	const route = await Route.findById(req.params.id);
+	const route = await Route.findById(req.params.id).populate('creator');
 	res.json(route);
 };
 
