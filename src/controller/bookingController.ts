@@ -78,9 +78,9 @@ const createBooking = async (req:Request, res: Response) => {
 	const booking = new Booking({route,user,price,selectedStopPoint});
 	try{
 		await booking.save();
-		user?.booking.push(booking._id);
+		// user?.booking.push(booking._id);
 		await user?.save();
-		route?.participants.push(user._id);
+		// route?.participants.push(user._id);
 		await route?.save();
 	}
 	catch(err){

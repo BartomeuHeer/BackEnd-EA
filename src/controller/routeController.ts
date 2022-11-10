@@ -20,9 +20,9 @@ const create = async (req: Request, res: Response) => {
 	const newRoute = new Route({ name,creator, startPoint, endPoint, stopPoint, dateOfBeggining});
 
 	await newRoute.save();
-	creator?.route.push(newRoute._id);
+	// creator?.route.push(newRoute._id);
 	creator?.save();
-	// await newRoute.save();
+	 await newRoute.save();
 	res.status(200).json( {message: "Route created", newRoute} );
 };
 

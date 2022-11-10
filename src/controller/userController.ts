@@ -7,9 +7,10 @@ import Rating from '../model/Rating';
 const register = async (req: Request, res: Response) => {
 	const name = req.body.name;
 	const email = req.body.email;
+	const birthday = req.body.birthday;
 	let password = req.body.password;
 	password = CryptoJS.AES.encrypt(password, 'secret key 123').toString();
-	const newUser = new User({ name, email, password });
+	const newUser = new User({ name, email, password, birthday });
 	await newUser.save();
 	res.status(200).json(newUser);
 };
@@ -73,6 +74,18 @@ const getRatings = async (req: Request, res: Response) => {
 	const ratings = await Rating.find({dest:req.params.id}).populate('user');
 	res.json(ratings);
 };
+const updateUser = async (req: Request, res: Response) =>{
+	const user = await User.findById(req.params.id);
+	if (!user) {
+		return res.status(404).send('No user found.');
+	}
+	else{
+		const password = CryptoJS.AES.encrypt(req.body.password, 'secret key 123').toString();
+		const update= {name: req.body.name,password,email: req.body.email, birthday: req.body.birthday}
+		const user1 = await User.findOneAndUpdate({id:req.params.id}, update);
+		res.json ({status: 'User updated' , user1})
+	}
+}
 const changePass = async (req: Request, res: Response) => {
 	const user = await User.findById(req.params.id);
 	if (!user) {
@@ -98,6 +111,7 @@ export default {
 	profile,
 	getall,
 	getone,
+	updateUser,
 	changePass,
 	getRatings,
 	newRating,
