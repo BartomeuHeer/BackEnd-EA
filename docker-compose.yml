@@ -1,0 +1,22 @@
+version: "3.9"
+services:
+  webapp:                                                                                                                                                                                                                                                                                  
+    container_name: backend 
+    restart: always 
+    build: . 
+    ports:
+      - "5432:5432"  
+    links:
+      - mongo 
+  mongo:
+    container_name: mymongodatabase
+    image: mongo
+    ports:
+      - "4000:27017"
+    enviroment: 
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=admin
+    volumes:
+      - mongo-data: /data/db
+volumes:
+  mongo-data:
