@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import CryptoJS from 'crypto-js';
 import { Request, Response } from 'express';
 import Rating from '../model/Rating';
+import IJwtPayload from '../model/JWTPayload';
 
 const register = async (req: Request, res: Response) => {
 	const name = req.body.name;
@@ -30,7 +31,7 @@ const login = async (req: Request, res : Response) => {
 	const payload = {
 		id: user._id,
 		isAdmin: user.admin,
-	}
+	} as IJwtPayload;
 	let iv = CryptoJS.enc.Hex.parse("FgLFXEr1MZl2mEnk");
 	secretToken = CryptoJS.AES.encrypt(secretToken,iv).toString();
 	const token = jwt.sign(payload,'secretToken',{expiresIn: 3600})
