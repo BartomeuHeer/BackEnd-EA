@@ -9,8 +9,9 @@ const register = async (req: Request, res: Response) => {
 	const email = req.body.email;
 	const birthday = req.body.birthday;
 	let password = req.body.password;
+	const admin = false;
 	password = CryptoJS.AES.encrypt(password, 'secret key 123').toString();
-	const newUser = new User({ name, email, password, birthday });
+	const newUser = new User({ name, email, password, birthday, admin });
 	await newUser.save();
 	res.status(200).json(newUser);
 };
@@ -24,7 +25,16 @@ const login = async (req: Request, res : Response) => {
 	if (validPassword !== req.body.password) {
 		return res.status(404).json({ message: 'User not found' });
 	}
-	res.status(200).json({ user });
+
+	let secretToken = 'Contraseña';
+	const payload = {
+		id: user._id,
+		isAdmin: user.admin,
+	}
+	let iv = CryptoJS.enc.Hex.parse("FgLFXEr1MZl2mEnk");
+	secretToken = CryptoJS.AES.encrypt(secretToken,iv).toString();
+	const token = jwt.sign(payload,'secretToken',{expiresIn: 3600})
+	res.status(200).json({ user,token });
 };
 
 const newRating = async (req: Request, res: Response) => {
