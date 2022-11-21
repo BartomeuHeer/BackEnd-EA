@@ -13,10 +13,3 @@ services:
     image: mongo
     ports:
       - "4000:27017"
-    enviroment: 
-      - MONGO_INITDB_ROOT_USERNAME=admin
-      - MONGO_INITDB_ROOT_PASSWORD=admin
-    volumes:
-      - mongo-data: /data/db
-volumes:
-  mongo-data:
