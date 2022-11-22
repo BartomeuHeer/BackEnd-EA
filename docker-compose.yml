@@ -1,15 +1,57 @@
 version: "3.9"
 services:
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "/etc/nginx/vhost.d"
+      - "/usr/share/nginx/html"
+      - "/var/run/docker.sock:/tmp/docker.sock:ro"
+      - "/etc/nginx/certs"
+    networks:
+      - proxy-tier
+
+  letsencrypt-nginx-proxy-companion:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    container_name: letsencrypt-nginx-proxy-companion
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    volumes_from:
+      - "nginx-proxy"
+    networks:
+      - proxy-tier
+
   webapp:                                                                                                                                                                                                                                                                                  
     container_name: backend 
     restart: always 
-    build: . 
-    ports:
-      - "5432:5432"  
-    links:
+    image: bartomeuheer/backend:0.1.1
+    environment:
+      - VIRTUAL_HOST= api.mobilea.tk
+      - LETSENCRYPT_HOST= api.mobilea.tk
+      - CERT_NAME= api.mobilea.tk
+      - LETSENCRYPT_EMAIL=barto297@gmail.com
+    networks:
+      - proxy-tier
+      - db-tier
+    depends_on:
       - mongo 
+
   mongo:
     container_name: mymongodatabase
     image: mongo
-    ports:
-      - "4000:27017"
+    networks:
+      - db-tier
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
+
+networks:
+  db-tier:
+    driver: bridge
+  proxy-tier:
+    driver: bridge
+  

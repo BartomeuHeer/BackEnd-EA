@@ -26,7 +26,7 @@ app.get('/', ( req: express.Request, res: express.Response ) => {
 })
 
 // Database
-mongoose.connect('mongodb://0.0.0.0/users', { useNewUrlParser : true } as ConnectOptions)
+mongoose.connect('mongodb://mongo/users', { useNewUrlParser : true } as ConnectOptions)
 	.then(() => {
 		// tslint:disable-next-line:no-console
         app.listen(port, () => console.log("Server corriendo en el puerto " + port));
