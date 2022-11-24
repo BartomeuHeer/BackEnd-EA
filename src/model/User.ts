@@ -34,7 +34,7 @@ const User = new Schema({
 	},
 	admin: {
 		type: Boolean,
-		required:  true
+
 	}
 });
 
