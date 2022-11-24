@@ -10,7 +10,7 @@ const register = async (req: Request, res: Response) => {
 	const email = req.body.email;
 	const birthday = req.body.birthday;
 	let password = req.body.password;
-	const admin = false;
+	const admin = req.body.admin;
 	password = CryptoJS.AES.encrypt(password, 'secret key 123').toString();
 	const newUser = new User({ name, email, password, birthday, admin });
 	await newUser.save();
@@ -27,14 +27,15 @@ const login = async (req: Request, res : Response) => {
 		return res.status(404).json({ message: 'User not found' });
 	}
 
-	const secretToken = 'password';
+	const secretToken = "password";
 	const payload = {
 		id: user._id.toString(),
 		isAdmin: user.admin
-	} as JwtPayload;
+	} ;
 	// let iv = CryptoJS.enc.Hex.parse("FgLFXEr1MZl2mEnk");
 	// secretToken = CryptoJS.AES.encrypt(secretToken,iv).toString();
-	const token = jwt.sign(payload,secretToken,{expiresIn: 3600})
+	const token = jwt.sign(
+		{id: user._id, isAdmin: user.admin},secretToken,{expiresIn: 3600})
 	res.status(200).json({ user,token });
 };
 
@@ -72,8 +73,11 @@ const profile = async (req: Request, res: Response) => {
 };
 
 const getall = async (req: Request, res: Response) => {
-	const users = await User.find();
-	res.json(users);
+	// if(req.body.admin === true){
+		const users = await User.find();
+		res.json(users);
+	// }
+
 };
 
 const getone = async (req: Request, res: Response) => {

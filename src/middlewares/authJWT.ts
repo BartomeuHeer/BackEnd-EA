@@ -6,13 +6,10 @@ import Booking from '../model/Booking';
 import Route from '../model/Route';
 import IJwtPayload from '../model/JWTPayload';
 import userController from '../controller/userController';
-
-const _SECRET: string = 'password';
-
+import { decode } from 'punycode';
 
 
-
-  // https://dev.to/kwabenberko/extend-express-s-request-object-with-typescript-declaration-merging-1nn5
+const _SECRET = "password";
 
 export async function verifyToken (req: Request, res: Response, next: NextFunction) {
     console.log("verifyToken");
@@ -24,12 +21,13 @@ export async function verifyToken (req: Request, res: Response, next: NextFuncti
 
     const decoded = jwt.verify(token, _SECRET) as IJwtPayload;
     console.log("verifyToken");
-    req.params.id = decoded.id;
-    const user = await User.findById(req.params.id, { password: 0 });
+    // req.params.id = decoded.id;
+    const user = await User.findById(decoded.id, { password: 0 });
     console.log(user);
     if (!user) return res.status(404).json({ message: "No user found" });
 
     console.log("user ok");
+
     next();
 
   } catch (error) {
@@ -37,21 +35,28 @@ export async function verifyToken (req: Request, res: Response, next: NextFuncti
   }
 };
 
-// export async function isOwner (req: Request, res: Response, next: NextFunction) {
-//   try {
-//     const user = await User.findById(req.userId);
+export async function verifyTokenAdmin (req: Request, res: Response, next: NextFunction) {
+  console.log("verifyTokenAdmin");
 
-//     const todoId = req.params.id;
-//     const todo = await Todo.findById(todoId);
+  const token = req.header("x-access-token");
+  if (!token) return res.status(403).json({ message: "No token provided" });
 
-//     if (!todo) return res.status(403).json({ message: "No user found" });
+try {
 
-//     if (todo.user != req.userId) return res.status(403).json({ message: "Not Owner" });
+  const decoded = jwt.verify(token, _SECRET) as IJwtPayload;
+  console.log("verifyToken");
+  console.log("1");
+  console.log(decoded.id);
+  // req.params.id = decoded.id;
+  const user = await User.findById(decoded.id, { password: 0 });
+  console.log(user);
+  if (!user) return res.status(404).json({ message: "No user found" });
+  if (!decoded.isAdmin) return res.status(404).json({mesage: "User is not admin"})
+  console.log("user ok");
 
-//     next();
+  next();
 
-//   } catch (error) {
-//     console.log(error)
-//     return res.status(500).send({ message: error });
-//   }
-// };
+} catch (error) {
+  return res.status(401).json({ message: "Unauthorized!" });
+}
+};

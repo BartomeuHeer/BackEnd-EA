@@ -5,7 +5,7 @@ import cors from "cors";
 import User from "./api/User";
 import Booking from "./api/Booking";
 import Route from "./api/Route";
-
+import  { RequestHandler } from 'express';
 
 const app = express();
 const port = process.env.PORT || 5432;
@@ -14,6 +14,7 @@ const port = process.env.PORT || 5432;
 app.use(bodyParser.urlencoded({ extended : true }));
 app.use(bodyParser.json())
 app.use(cors());
+// app.use(express.json() as RequestHandler);
 
 // Routes
 app.use('/api/users', User)
