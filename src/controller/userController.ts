@@ -1,5 +1,5 @@
 import User from '../model/User';
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import CryptoJS from 'crypto-js';
 import { Request, Response } from 'express';
 import Rating from '../model/Rating';
@@ -27,14 +27,14 @@ const login = async (req: Request, res : Response) => {
 		return res.status(404).json({ message: 'User not found' });
 	}
 
-	let secretToken = 'Contraseña';
+	const secretToken = 'password';
 	const payload = {
-		id: user._id,
-		isAdmin: user.admin,
-	} as IJwtPayload;
-	let iv = CryptoJS.enc.Hex.parse("FgLFXEr1MZl2mEnk");
-	secretToken = CryptoJS.AES.encrypt(secretToken,iv).toString();
-	const token = jwt.sign(payload,'secretToken',{expiresIn: 3600})
+		id: user._id.toString(),
+		isAdmin: user.admin
+	} as JwtPayload;
+	// let iv = CryptoJS.enc.Hex.parse("FgLFXEr1MZl2mEnk");
+	// secretToken = CryptoJS.AES.encrypt(secretToken,iv).toString();
+	const token = jwt.sign(payload,secretToken,{expiresIn: 3600})
 	res.status(200).json({ user,token });
 };
 
