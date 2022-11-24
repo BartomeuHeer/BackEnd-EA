@@ -31,6 +31,10 @@ const User = new Schema({
 	vehicle: {
 		type: Schema.Types.ObjectId,
 		ref: "Vehicle"
+	},
+	admin: {
+		type: Boolean,
+		required:  true
 	}
 });
 
