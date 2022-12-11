@@ -1,4 +1,4 @@
-import User from './User';
+import User from './Client';
 import { Schema, model } from 'mongoose';
 
 export default interface IJwtPayload {

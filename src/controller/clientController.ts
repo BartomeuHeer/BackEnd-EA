@@ -1,4 +1,4 @@
-import User from '../model/User';
+import User from '../model/Client';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import CryptoJS from 'crypto-js';
 import { Request, Response } from 'express';
@@ -39,6 +39,8 @@ const login = async (req: Request, res : Response) => {
 	res.status(200).json({ user,token });
 };
 
+
+
 const newRating = async (req: Request, res: Response) => {
 	const author = req.body.author;
 	const comment = req.body.comment;
@@ -64,12 +66,18 @@ const deleteOne = async (req: Request, res: Response) => {
 	return res.status(200).json(user);
 }
 
-const profile = async (req: Request, res: Response) => {
+const getProfile = async (req: Request, res: Response) => {
 	const user = await User.findById(req.params.userId, { password: 0 });
 	if (!user) {
 		return res.status(404).send('No user found.');
 	}
-	res.json(user);
+	const name = user.name;
+	const email = user.email;
+	const birthday = user.birthday;
+	const route = user.route;
+	const vehicle = user.vehicle;
+	const userinfo = new User({ name, email, birthday, route, vehicle });
+	res.json(userinfo);
 };
 
 const getall = async (req: Request, res: Response) => {
@@ -82,7 +90,7 @@ const getall = async (req: Request, res: Response) => {
 
 const getone = async (req: Request, res: Response) => {
 	const user = await User.findById(req.params.id);
-	res.json(user);
+	res.json(user);//no hem de passar tot el user
 };
 
 const getRatings = async (req: Request, res: Response) => {
@@ -123,12 +131,12 @@ const changePass = async (req: Request, res: Response) => {
 export default {
 	register,
 	login,
-	profile,
 	getall,
 	getone,
 	updateUser,
 	changePass,
 	getRatings,
 	newRating,
-	deleteOne
+	deleteOne,
+	getProfile
 };

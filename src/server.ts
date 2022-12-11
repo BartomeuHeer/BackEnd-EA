@@ -2,7 +2,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import mongoose, { ConnectOptions } from "mongoose";
 import cors from "cors";
-import User from "./api/User";
+import User from "./api/Client";
 import Booking from "./api/Booking";
 import Route from "./api/Route";
 import  { RequestHandler } from 'express';

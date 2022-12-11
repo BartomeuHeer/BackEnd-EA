@@ -3,7 +3,7 @@ import Route from '../model/Route';
 import Point from '../model/Point';
 import jwt from 'jsonwebtoken';
 import { Request, Response } from 'express';
-import User from '../model/User';
+import User from '../model/Client';
 import { exec } from 'child_process';
 
 // CREATE NEW ROUTE

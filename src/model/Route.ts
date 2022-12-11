@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-import User from './User';
+import User from './Client';
 
 const Route = new Schema({
 	name: String,

@@ -1,5 +1,5 @@
 import Booking from '../model/Booking';
-import User from '../model/User';
+import User from '../model/Client';
 import { Request, Response } from 'express';
 import Route from '../model/Route';
 import Point from '../model/Point';
