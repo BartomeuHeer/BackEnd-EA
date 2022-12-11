@@ -90,7 +90,7 @@ const getall = async (req: Request, res: Response) => {
 
 const getone = async (req: Request, res: Response) => {
 	const user = await User.findById(req.params.id);
-	res.json(user);//no hem de passar tot el user
+	res.json(user);// no hem de passar tot el user
 };
 
 const getRatings = async (req: Request, res: Response) => {
