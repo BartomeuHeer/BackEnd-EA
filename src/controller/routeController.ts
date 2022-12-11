@@ -61,7 +61,7 @@ const newParticipant = async (req: Request, res: Response) => {
 // GET ALL ROUTES
 
 const getAllRoutes = async (req: Request, res: Response) => {
-	const routes = await Route.find().populate('creator');
+	const routes = await Route.find().populate('creator').populate('participants');
 	res.json(routes);
 };
 

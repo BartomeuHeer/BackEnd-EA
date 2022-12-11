@@ -14,7 +14,7 @@ const _SECRET = "password";
 export async function verifyToken (req: Request, res: Response, next: NextFunction) {
     console.log("verifyToken");
 
-    const token = req.header("x-access-token");
+    const token = req.header("token");
     if (!token) return res.status(403).json({ message: "No token provided" });
 
   try {
@@ -38,7 +38,7 @@ export async function verifyToken (req: Request, res: Response, next: NextFuncti
 export async function verifyID (req: Request, res: Response, next: NextFunction) {
 
 
-  const token = req.header("x-access-token");
+  const token = req.header("token");
   if (!token) return res.status(403).json({ message: "No token provided" });
 
 try {
@@ -64,7 +64,7 @@ try {
 export async function verifyTokenAdmin (req: Request, res: Response, next: NextFunction) {
   console.log("verifyTokenAdmin");
 
-  const token = req.header("x-access-token");
+  const token = req.header("token");
   if (!token) return res.status(403).json({ message: "No token provided" });
 
 try {
