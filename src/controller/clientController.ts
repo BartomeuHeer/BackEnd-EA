@@ -97,6 +97,15 @@ const getone = async (req: Request, res: Response) => {
 	res.json(user);// no hem de passar tot el user
 };
 
+const getUserRoutes = async (req: Request, res: Response) => {
+	const user = await User.findById(req.params.id);
+	if (!user) {
+		return res.status(404).send('No user found.');
+	}
+	const route = user.route;
+	res.json(route);
+};
+
 const getRatings = async (req: Request, res: Response) => {
 	const ratings = await Rating.find({ dest: req.params.id }).populate('user');
 	res.json(ratings);
@@ -142,5 +151,6 @@ export default {
 	getRatings,
 	newRating,
 	deleteOne,
-	getProfile
+	getProfile,
+	getUserRoutes
 };
