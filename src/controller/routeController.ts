@@ -9,21 +9,31 @@ import { exec } from 'child_process';
 // CREATE NEW ROUTE
 
 const create = async (req: Request, res: Response) => {
+	try{
 	const name = req.body.name;
 
-	const creator = await User.findOne({name: req.body.creator});
-	// const participants = [req.body.participants];
+	await User.findOne({name: req.body.creator}).then(async (data) =>{
 	const startPoint = req.body.startPoint;
 	const endPoint = req.body.endPoint;
-	const stopPoint = [req.body.stopPoint];
+	const stopPoint = req.body.stopPoint;
 	const dateOfBeggining = req.body.dateOfBeggining;
-	const newRoute = new Route({ name,creator, startPoint, endPoint, stopPoint, dateOfBeggining});
+	const newRoute = new Route({ name,data, startPoint, endPoint, stopPoint, dateOfBeggining});
 
-	await newRoute.save();
-	// creator?.route.push(newRoute._id);
-	creator?.save();
-	 await newRoute.save();
+	newRoute.save();
+
+	data?.updateOne({"_id": data.id}, {$addToSet: {route: newRoute}});
+
 	res.status(200).json( {message: "Route created", newRoute} );
+
+	}).catch(function () {
+		res.status(400).json( {message: "Error"} );
+	});
+	// const participants = [req.body.participants];
+
+	}catch(err){
+		console.log(err);
+		res.status(400).json( {message: err} );
+	}
 };
 
 // PUT NEW POINT INTO A ROUTE
@@ -45,12 +55,28 @@ const newStopPoint = async (req: Request, res: Response) => {
 // PUT NEW PARTICIPANT INTO A ROUTE
 
 const newParticipant = async (req: Request, res: Response) => {
-	const route = await Route.findById(req.params.id);
+	const route = await Route.findById(req.body.id);
 	if (!route) {
 		return res.status(404).send('No route found.');
 	}
 	else{
 		Route.updateOne({"_id":req.body.id}, {$addToSet: {participants: req.body.participant}})
+            .then((data) => {
+        res.status(201).json(data);
+    }).catch((err) => {
+        res.status(500).json(err);
+    })}
+};
+
+// PUT NEW ROUTE INTO A USER
+
+const newRouteInUser = async (req: Request, res: Response) => {
+	const user = await User.findById(req.body.id);
+	if (!user) {
+		return res.status(404).send('No route found.');
+	}
+	else{
+		User.updateOne({"_id":req.body.id}, {$addToSet: {routes: req.body.route}})
             .then((data) => {
         res.status(201).json(data);
     }).catch((err) => {
@@ -129,5 +155,6 @@ export default{
 	getAllPoints,
 	updateRoute,
 	deleteRoute,
-	getRoute
+	getRoute,
+	newRouteInUser
 };

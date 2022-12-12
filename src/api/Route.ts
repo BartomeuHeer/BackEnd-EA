@@ -8,7 +8,8 @@ import { verifyID } from '../middlewares/authJWT';
 const router = Router();
 router.post('/create',[verifyToken], routeController.create);
 // router.post('/:id/newStopPoint', routeController.newStopPoint);
-// router.post('/:id/newParticipant', routeController.newParticipant);
+router.post('/newParticipant', routeController.newParticipant);
+router.post('/newRouteInUser', routeController.newRouteInUser);
 // router.get('/:id/getAllParticipants/',routeController.getAllParticipants);
 
 router.get('/',[verifyTokenAdmin],routeController.getAllRoutes);
