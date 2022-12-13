@@ -11,7 +11,8 @@ router.post('/create',[verifyToken], routeController.create);
 // router.post('/:id/newParticipant', routeController.newParticipant);
 // router.get('/:id/getAllParticipants/',routeController.getAllParticipants);
 
-router.get('/',[verifyTokenAdmin],routeController.getAllRoutes);
+router.get('/',routeController.getAllRoutes);
+router.post('/search', routeController.getFilteredRoutes);
 // router.get('/',routeController.getAllRoutes);
 
 // router.get('/:id/getAllPoints',routeController.getAllPoints);

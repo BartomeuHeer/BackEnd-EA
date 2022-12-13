@@ -15,7 +15,7 @@ const create = async (req: Request, res: Response) => {
 	// const participants = [req.body.participants];
 	const startPoint = req.body.startPoint;
 	const endPoint = req.body.endPoint;
-	const stopPoint = [req.body.stopPoint];
+	const stopPoint = req.body.stopPoint;
 	const dateOfBeggining = req.body.dateOfBeggining;
 	const newRoute = new Route({ name,creator, startPoint, endPoint, stopPoint, dateOfBeggining});
 
@@ -64,6 +64,18 @@ const getAllRoutes = async (req: Request, res: Response) => {
 	const routes = await Route.find().populate('creator').populate('participants');
 	res.json(routes);
 };
+
+const getFilteredRoutes = async (req: Request, res: Response) => {
+	const routes = await Route.find({
+		$and: [
+			{ startPoint: req.body.start},
+			{ $or: [ {stopPoint: req.body.stop},{endPoint: req.body.stop}]},
+			{ dateOfBeggining: { $gt: req.body.dateInit, $lt: req.body.dateStop }}
+		]
+	})
+	res.json(routes);
+}
+
 
 // GET ALL PARTICIPANTS OF A ROUTE
 
@@ -129,5 +141,6 @@ export default{
 	getAllPoints,
 	updateRoute,
 	deleteRoute,
-	getRoute
+	getRoute,
+	getFilteredRoutes
 };
