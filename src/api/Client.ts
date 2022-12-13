@@ -16,5 +16,6 @@ router.get('/:id/rating/',userController.getRatings);
 router.put('/forgotpass/:id',[verifyID], userController.changePass);
 router.delete('/:id',[verifyID], userController.deleteOne);
 router.get('/:id/profile',[verifyID], userController.getProfile);
+router.get('/:id/routeuser',[verifyID], userController.getUserRoutes);
 
 export default router;
