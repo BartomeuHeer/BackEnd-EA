@@ -22,7 +22,27 @@ const register = async (req: Request, res: Response) => {
 };
 
 const login = async (req: Request, res: Response) => {
-	const user = await User.findOne({ email: req.body.email });
+	const user = await User.findOne({ email: req.body.email }).populate({
+		path:'route',
+		populate: {
+			path : 'creator'
+			}
+		}).populate({
+			path:'vehicle',
+			populate: {
+				path : 'owner'
+				}
+			}).populate({
+				path:'ratings',
+				populate: {
+					path : 'author'
+					}
+				}).populate({
+					path:'booking',
+					populate: {
+						path : 'user'
+						}
+					});
 	if (!user) {
 		return res.status(404).json({ message: 'User not found' });
 	}

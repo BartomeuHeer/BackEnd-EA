@@ -1,7 +1,7 @@
 import { Schema, model } from 'mongoose';
 import User from './Client';
 
-const Route = new Schema({
+const Route2 = new Schema({
 	name: String,
     creator:{
         type: Schema.Types.ObjectId,
@@ -14,8 +14,8 @@ const Route = new Schema({
     startPoint: String,
     endPoint: String,
     stopPoint: [String],
-	dateOfBeggining: Date
-
+	dateOfBeggining: Date,
+	price: Number,
 });
 
-export default model('Route', Route);
+export default model('Route', Route2);
