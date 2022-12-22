@@ -38,9 +38,9 @@ app.get('/', ( req: express.Request, res: express.Response ) => {
 })
 
 io.on("connection", (socket: Socket) => {
-	console.log("new user connected");
+	console.log("***************************************new user connected");
 	socket.on("sendMsg",(msg) => {
-		console.log("sending message");
+		console.log("===========================================sending message", msg);
 		socket.broadcast.emit("receiveMessage", {...msg, type:"otherMsg"});
 	});
 });
