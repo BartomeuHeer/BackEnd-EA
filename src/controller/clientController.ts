@@ -96,11 +96,11 @@ const getProfile = async (req: Request, res: Response) => {
 		return res.status(404).send('No user found.');
 	}
 	const name = user.name;
+	const surname = user.surname;
 	const email = user.email;
 	const birthday = user.birthday;
-	const route = user.route;
 	const vehicle = user.vehicle;
-	const userinfo = new User({ name, email, birthday, route, vehicle });
+	const userinfo = new User({ name, surname, email, birthday, vehicle });
 	res.json(userinfo);
 };
 
