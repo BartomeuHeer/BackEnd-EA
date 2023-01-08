@@ -92,13 +92,17 @@ const getAllRoutes = async (req: Request, res: Response) => {
 };
 
 const getFilteredRoutes = async (req: Request, res: Response) => {
+	const startDate: Date = new Date(req.body.dateInit);
+	const stopDate: Date = new Date(startDate);
+	stopDate.setDate(startDate.getDate() + 1);
+	console.log("start: " + startDate + " Stop: " + stopDate);
 	const routes = await Route.find({
 		$and: [
 			{ startPoint: req.body.start},
 			{ $or: [ {stopPoint: req.body.stop},{endPoint: req.body.stop}]},
-			{ dateOfBeggining: { $gt: req.body.dateInit, $lt: req.body.dateStop }}
+			{ dateOfBeggining: { $gt: startDate, $lt: stopDate }}
 		]
-	})
+	}).populate("creator").populate("participants")
 	res.json(routes);
 }
 
