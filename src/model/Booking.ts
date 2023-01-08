@@ -10,7 +10,6 @@ const Booking = new Schema({
 		ref: "User"
 	},
 	dayOfCreation: {type: Date, default: Date.now},
-	price: Number,
 	cancelPolicy:{
 		completRefund:{
 			maxCancelDate: Date,

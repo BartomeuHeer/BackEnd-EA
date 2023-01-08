@@ -6,7 +6,7 @@ import { verifyToken } from '../middlewares/authJWT';
 import { verifyID } from '../middlewares/authJWT';
 
 const router = Router();
-router.post('/create',[verifyToken], routeController.create);
+router.post('/create', routeController.create);
 // router.post('/:id/newStopPoint', routeController.newStopPoint);
 router.post('/newParticipant', routeController.newParticipant);
 router.post('/newRouteInUser', routeController.newRouteInUser);

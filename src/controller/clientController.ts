@@ -22,7 +22,27 @@ const register = async (req: Request, res: Response) => {
 };
 
 const login = async (req: Request, res: Response) => {
-	const user = await User.findOne({ email: req.body.email });
+	const user = await User.findOne({ email: req.body.email }).populate({
+		path:'route',
+		populate: {
+			path : 'creator'
+			}
+		}).populate({
+			path:'vehicle',
+			populate: {
+				path : 'owner'
+				}
+			}).populate({
+				path:'ratings',
+				populate: {
+					path : 'author'
+					}
+				}).populate({
+					path:'booking',
+					populate: {
+						path : 'user'
+						}
+					});
 	if (!user) {
 		return res.status(404).json({ message: 'User not found' });
 	}
@@ -43,7 +63,33 @@ const login = async (req: Request, res: Response) => {
 	res.status(200).json({ user, token });
 };
 
-
+const getUserData = async (req: Request, res: Response) => {
+	const user = await User.findOne({ email: req.body.email }).populate({
+		path:'route',
+		populate: {
+			path : 'creator'
+			}
+		}).populate({
+			path:'vehicle',
+			populate: {
+				path : 'owner'
+				}
+			}).populate({
+				path:'ratings',
+				populate: {
+					path : 'author'
+					}
+				}).populate({
+					path:'booking',
+					populate: {
+						path : 'user'
+						}
+					});
+	if (!user) {
+		return res.status(404).json({ message: 'User not found' });
+	}
+	res.status(200).json(user);
+};
 
 const newRating = async (req: Request, res: Response) => {
 	const author = req.body.author;
@@ -76,11 +122,11 @@ const getProfile = async (req: Request, res: Response) => {
 		return res.status(404).send('No user found.');
 	}
 	const name = user.name;
+	const surname = user.surname;
 	const email = user.email;
 	const birthday = user.birthday;
-	const route = user.route;
 	const vehicle = user.vehicle;
-	const userinfo = new User({ name, email, birthday, route, vehicle });
+	const userinfo = new User({ name, surname, email, birthday, vehicle });
 	res.json(userinfo);
 };
 
@@ -152,5 +198,6 @@ export default {
 	newRating,
 	deleteOne,
 	getProfile,
-	getUserRoutes
+	getUserRoutes,
+	getUserData
 };
