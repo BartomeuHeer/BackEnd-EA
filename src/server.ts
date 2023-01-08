@@ -5,10 +5,9 @@ import cors from "cors";
 import User from "./api/Client";
 import Booking from "./api/Booking";
 import Route from "./api/Route";
-import  { RequestHandler } from 'express';
+import { RequestHandler } from 'express';
 import { createServer } from "http";
 import { Server, Socket } from "socket.io";
-
 
 const app = express();
 const port = process.env.PORT || 5432;

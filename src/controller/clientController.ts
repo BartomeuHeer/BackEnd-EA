@@ -63,7 +63,33 @@ const login = async (req: Request, res: Response) => {
 	res.status(200).json({ user, token });
 };
 
-
+const getUserData = async (req: Request, res: Response) => {
+	const user = await User.findOne({ email: req.body.email }).populate({
+		path:'route',
+		populate: {
+			path : 'creator'
+			}
+		}).populate({
+			path:'vehicle',
+			populate: {
+				path : 'owner'
+				}
+			}).populate({
+				path:'ratings',
+				populate: {
+					path : 'author'
+					}
+				}).populate({
+					path:'booking',
+					populate: {
+						path : 'user'
+						}
+					});
+	if (!user) {
+		return res.status(404).json({ message: 'User not found' });
+	}
+	res.status(200).json(user);
+};
 
 const newRating = async (req: Request, res: Response) => {
 	const author = req.body.author;
@@ -172,5 +198,6 @@ export default {
 	newRating,
 	deleteOne,
 	getProfile,
-	getUserRoutes
+	getUserRoutes,
+	getUserData
 };

@@ -18,12 +18,12 @@ const create = async (req: Request, res: Response) => {
 	const stopPoint = req.body.stopPoint;
 	const dateOfBeggining = req.body.dateOfBeggining;
 	const newRoute = new Route({ name,data, startPoint, endPoint, stopPoint, dateOfBeggining});
-
+	
 	newRoute.save();
 
 	data?.updateOne({"_id": data.id}, {$addToSet: {route: newRoute}});
 
-	res.status(200).json( {message: "Route created", newRoute} );
+	res.status(200).json( newRoute );
 
 	}).catch( (error) => {
 		res.status(400).json( {message: "Error"} );
