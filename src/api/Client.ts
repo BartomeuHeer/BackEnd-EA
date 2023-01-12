@@ -11,7 +11,8 @@ router.post('/login', userController.login);
 router.post('/getUserData', userController.getUserData);
 
 // router.post('/:id/rating/new',userController.newRating);
-router.get('/',[verifyTokenAdmin], userController.getall);
+// router.get('/',[verifyTokenAdmin], userController.getall);
+router.get('/', userController.getall);
 router.get('/:id',[verifyToken], userController.getone);
 router.put('/:id',[verifyID],userController.updateUser);
 router.get('/:id/rating/',userController.getRatings);

@@ -42,7 +42,7 @@ io.on("connection", (socket: Socket) => {
 		console.log("===========================================sending message", msg);
 		socket.broadcast.emit("receiveMessage", {...msg, type:"otherMsg"});
 	});
-});
+} );
 httpServer.listen(3000);
 
 // Database

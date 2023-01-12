@@ -55,12 +55,18 @@ const newStopPoint = async (req: Request, res: Response) => {
 // PUT NEW PARTICIPANT INTO A ROUTE
 
 const newParticipant = async (req: Request, res: Response) => {
+	console.log("hello");
+	console.log(req.body.id);
+	// console.log(req.body.participant._id);
 	const route = await Route.findById(req.body.id);
 	if (!route) {
-		return res.status(404).send('No route found.');
+		console.log("holass");
+		return res.status(401).send('Route not found.');
 	}
 	else{
-		Route.updateOne({"_id":req.body.id}, {$addToSet: {participants: req.body.participant}})
+		const user = await User.findById(req.body.participantId);
+
+		Route.updateOne({"_id":req.body.id}, {$addToSet: {participants: user}})
             .then((data) => {
         res.status(201).json(data);
     }).catch((err) => {
