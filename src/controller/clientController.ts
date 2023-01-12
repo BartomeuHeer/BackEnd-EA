@@ -4,6 +4,7 @@ import CryptoJS from 'crypto-js';
 import { Request, Response } from 'express';
 import Rating from '../model/Rating';
 import IJwtPayload from '../model/JWTPayload';
+import Complaint from '../model/Complaint';
 
 const register = async (req: Request, res: Response) => {
 	const name = req.body.name;
@@ -185,8 +186,24 @@ const changePass = async (req: Request, res: Response) => {
 	}
 };
 
+const createComplaint = async (req: Request, res: Response) => {
+	const date = req.body.date;
+	const name = req.body.name;
+	const comment = req.body.comment;
+	const category = req.body.category;
+	await User.findOne({"name":name}).then((userFound)=>{
+		const newComplaint = new Complaint({date,name,comment,category });
+		newComplaint.save().then((data) => {
+			res.status(200).json(data);
+		}).catch((error) => {
+			res.status(403).json("This complaint already exists.");
+		});
+	}).catch((error) => {
+		res.status(404).json("User not found.");
+	});
 
-// const {id,user,name,completed} = req.body;
+};
+
 export default {
 	register,
 	login,
@@ -199,5 +216,6 @@ export default {
 	deleteOne,
 	getProfile,
 	getUserRoutes,
-	getUserData
+	getUserData,
+	createComplaint
 };
