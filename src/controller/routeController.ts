@@ -102,13 +102,37 @@ const getFilteredRoutes = async (req: Request, res: Response) => {
 	const stopDate: Date = new Date(startDate);
 	stopDate.setDate(startDate.getDate() + 1);
 	console.log("start: " + startDate + " Stop: " + stopDate);
+	/* const route = await Route.aggregate([
+		 {
+			$geoNear: {
+				near:{
+					type: "Point",
+					coordinates: req.body.startPoint.coordinates
+
+				},
+				maxDistance: 10000,
+				distanceField: "startPoint.location"
+			}
+		 },
+		 {
+			$geoNear: {
+				near:{
+					type: "Point",
+					coordinates: req.body.startPoint.coordinates
+
+				},
+				maxDistance: 10000,
+				distanceField: "stopPoint.location"
+			}
+		 }
+	]) */
 	const routes = await Route.find({
 		$and: [
 			{ startPoint: req.body.start},
 			{ $or: [ {stopPoint: req.body.stop},{endPoint: req.body.stop}]},
 			{ dateOfBeggining: { $gt: startDate, $lt: stopDate }}
 		]
-	}).populate("creator").populate("participants")
+	}).populate("creator").populate("participants").populate("stopPoint").populate("startPoint").populate("endPoint")
 	res.json(routes);
 }
 

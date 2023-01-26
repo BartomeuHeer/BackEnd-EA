@@ -1,9 +1,15 @@
 import { Schema, model } from 'mongoose';
 
 const Point = new Schema({
-	name: String,
+    placeName: String,
+    location:{
+        type: String,
+        coordinates: [Number]
+    }
+	
     // latitude: Number,
     // length: Number
 });
+Point.index({location: "2dsphere"});
 
 export default model('Point', Point);
