@@ -6,7 +6,7 @@ const Point = new Schema({
         type: String,
         coordinates: [Number]
     }
-	
+
     // latitude: Number,
     // length: Number
 });
