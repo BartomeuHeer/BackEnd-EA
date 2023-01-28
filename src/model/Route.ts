@@ -27,6 +27,7 @@ const Route2 = new Schema({
     }],
 	dateOfBeggining: Date,
 	price: Number,
+    maxParticipants: Number
 });
 
 export default model('Route', Route2);

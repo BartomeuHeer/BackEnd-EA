@@ -17,7 +17,9 @@ const create = async (req: Request, res: Response) => {
 	const dateOfBeggining = req.body.dateOfBeggining;
 	const name : string= req.body.creator + startPoint + stopPoint;
 	const creator = data;
-	const newRoute = new Route({name, creator, startPoint, endPoint, stopPoint, dateOfBeggining});
+	const price = req.body.price;
+	const maxParticipants = req.body.maxParticipants;
+	const newRoute = new Route({name, creator, startPoint, endPoint, stopPoint, dateOfBeggining,price,maxParticipants});
 
 	newRoute.save();
 
