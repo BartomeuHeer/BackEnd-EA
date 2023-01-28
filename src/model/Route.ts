@@ -22,6 +22,8 @@ const Route2 = new Schema({
     stopPoint: [{
         type: Schema.Types.ObjectId,
         ref: "Point"
+    },{
+        price: Number
     }],
 	dateOfBeggining: Date,
 	price: Number,
