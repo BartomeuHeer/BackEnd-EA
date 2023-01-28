@@ -15,7 +15,7 @@ const Route2 = new Schema({
     endPoint: String,
     stopPoint: [String],
 	dateOfBeggining: Date,
-	price: Number,
+	price: [String],
 });
 
 export default model('Route', Route2);

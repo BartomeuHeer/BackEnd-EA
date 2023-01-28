@@ -17,8 +17,8 @@ const create = async (req: Request, res: Response) => {
 	const dateOfBeggining = req.body.dateOfBeggining;
 	const name : string= req.body.creator + startPoint + stopPoint;
 	const creator = data;
-	const newRoute = new Route({name, creator, startPoint, endPoint, stopPoint, dateOfBeggining});
-
+	const price = req.body.price;
+	const newRoute = new Route({name, creator, startPoint, endPoint, stopPoint, dateOfBeggining,price});
 	newRoute.save();
 
 	data?.updateOne({"_id": data.id}, {$addToSet: {route: newRoute}});
