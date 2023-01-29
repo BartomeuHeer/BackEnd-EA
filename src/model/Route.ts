@@ -12,17 +12,16 @@ const Route2 = new Schema({
         ref: "User"
     }],
     startPoint: {
-        type: Schema.Types.ObjectId,
-        ref: "Point"
+        placeName: String,
+        coordinates: [Number]
     },
     endPoint: {
-        type: Schema.Types.ObjectId,
-        ref: "Point"
+        placeName: String,
+        coordinates: [Number]
     },
     stopPoint: [{
-        type: Schema.Types.ObjectId,
-        ref: "Point"
-    },{
+        placeName: String,
+        coordinates: [Number],
         price: Number
     }],
 	dateOfBeggining: Date,

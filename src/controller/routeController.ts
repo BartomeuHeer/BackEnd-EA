@@ -9,32 +9,35 @@ import { exec } from 'child_process';
 // CREATE NEW ROUTE
 
 const create = async (req: Request, res: Response) => {
-	try{
-	await User.findById(req.body.creator).then(async (data) =>{
-	const startPoint = req.body.startPoint;
-	const endPoint = req.body.endPoint;
-	const stopPoint = req.body.stopPoint;
-	const dateOfBeggining = req.body.dateOfBeggining;
-	const name : string= req.body.creator + startPoint + stopPoint;
-	const creator = data;
-	const price = req.body.price;
-	const maxParticipants = req.body.maxParticipants;
-	const newRoute = new Route({name, creator, startPoint, endPoint, stopPoint, dateOfBeggining,price,maxParticipants});
+	try {
+		await User.findById(req.body.creator).then(async (data) => {
+			const startPoint = req.body.startPoint;
+			const endPoint = req.body.endPoint;
+			console.log(req.body.startPoint);
+			const stopPoint = req.body.stopPoint;
+			const dateOfBeggining = req.body.dateOfBeggining;
+			const name: string = req.body.creator + startPoint + stopPoint;
+			const creator = data;
+			const price = req.body.price;
+			const maxParticipants = req.body.maxParticipants;
+			const newRoute = new Route({ name, creator, startPoint, endPoint, stopPoint, dateOfBeggining, price, maxParticipants });
 
-	newRoute.save();
+			await newRoute.save();
 
-	data?.updateOne({"_id": data.id}, {$addToSet: {route: newRoute}});
+			await data?.updateOne({ "_id": data.id }, { $addToSet: { route: newRoute } });
 
-	res.status(200).json(newRoute);
 
-	}).catch( (error) => {
-		res.status(400).json( {message: "Error"} );
-	});
-	// const participants = [req.body.participants];
 
-	}catch(err){
+			res.status(200).json(newRoute);
+
+		}).catch((error) => {
+			res.status(400).json({ message: "Error", error });
+		});
+		// const participants = [req.body.participants];
+
+	} catch (err) {
 		console.log(err);
-		res.status(400).json( {message: err} );
+		res.status(400).json({ message: err });
 	}
 };
 
@@ -45,13 +48,14 @@ const newStopPoint = async (req: Request, res: Response) => {
 	if (!route) {
 		return res.status(404).send('No route found.');
 	}
-	else{
-		Route.updateOne({"_id":req.body.id}, {$addToSet: {Point: req.body.Point}})
-            .then((data) => {
-        res.status(201).json(data);
-    }).catch((err) => {
-        res.status(500).json(err);
-    })}
+	else {
+		Route.updateOne({ "_id": req.body.id }, { $addToSet: { Point: req.body.Point } })
+			.then((data) => {
+				res.status(201).json(data);
+			}).catch((err) => {
+				res.status(500).json(err);
+			})
+	}
 };
 
 // PUT NEW PARTICIPANT INTO A ROUTE
@@ -65,15 +69,16 @@ const newParticipant = async (req: Request, res: Response) => {
 		console.log("holass");
 		return res.status(401).send('Route not found.');
 	}
-	else{
+	else {
 		const user = await User.findById(req.body.participantId);
 
-		Route.updateOne({"_id":req.body.id}, {$addToSet: {participants: user}})
-            .then((data) => {
-        res.status(201).json(data);
-    }).catch((err) => {
-        res.status(500).json(err);
-    })}
+		Route.updateOne({ "_id": req.body.id }, { $addToSet: { participants: user } })
+			.then((data) => {
+				res.status(201).json(data);
+			}).catch((err) => {
+				res.status(500).json(err);
+			})
+	}
 };
 
 // PUT NEW ROUTE INTO A USER
@@ -83,19 +88,20 @@ const newRouteInUser = async (req: Request, res: Response) => {
 	if (!user) {
 		return res.status(404).send('No route found.');
 	}
-	else{
-		User.updateOne({"_id":req.body.id}, {$addToSet: {routes: req.body.route}})
-            .then((data) => {
-        res.status(201).json(data);
-    }).catch((err) => {
-        res.status(500).json(err);
-    })}
+	else {
+		User.updateOne({ "_id": req.body.id }, { $addToSet: { routes: req.body.route } })
+			.then((data) => {
+				res.status(201).json(data);
+			}).catch((err) => {
+				res.status(500).json(err);
+			})
+	}
 };
 
 // GET ALL ROUTES
 
 const getAllRoutes = async (req: Request, res: Response) => {
-	const routes = await Route.find().populate('creator').populate('participants');
+	const routes = await Route.find().populate({path: 'creator',populate:{path:'route'}}).populate('participants').populate('startPoint').populate('endPoint').populate('stopPoint');
 	res.json(routes);
 };
 
@@ -104,37 +110,14 @@ const getFilteredRoutes = async (req: Request, res: Response) => {
 	const stopDate: Date = new Date(startDate);
 	stopDate.setDate(startDate.getDate() + 1);
 	console.log("start: " + startDate + " Stop: " + stopDate);
-	/* const route = await Route.aggregate([
-		 {
-			$geoNear: {
-				near:{
-					type: "Point",
-					coordinates: req.body.startPoint.coordinates
 
-				},
-				maxDistance: 10000,
-				distanceField: "startPoint.location"
-			}
-		 },
-		 {
-			$geoNear: {
-				near:{
-					type: "Point",
-					coordinates: req.body.startPoint.coordinates
-
-				},
-				maxDistance: 10000,
-				distanceField: "stopPoint.location"
-			}
-		 }
-	]) */
 	const routes = await Route.find({
 		$and: [
-			{ startPoint: req.body.start},
-			{ $or: [ {stopPoint: req.body.stop},{endPoint: req.body.stop}]},
-			{ dateOfBeggining: { $gt: startDate, $lt: stopDate }}
+			{ "startPoint.placeName": req.body.start },
+			{ $or: [{ "stopPoint.placeName": req.body.stop }, { "endPoint.placeName": req.body.stop }] },
+			{ dateOfBeggining: { $gt: startDate, $lt: stopDate } }
 		]
-	}).populate("creator").populate("participants").populate("stopPoint").populate("startPoint").populate("endPoint")
+	}).populate("creator").populate("participants")
 	res.json(routes);
 }
 
@@ -170,13 +153,13 @@ const updateRoute = async (req: Request, res: Response) => {
 	if (!updatedRoute) {
 		return res.status(404).send('No route found.');
 	}
-	else{
+	else {
 		updatedRoute.name = req.body.name;
 		updatedRoute.creator = req.body.creator;
-		updatedRoute.participants= req.body.participants;
-		updatedRoute.startPoint=req.body.startPoint;
-		updatedRoute.endPoint=req.body.endPoint;
-		updatedRoute.stopPoint=req.body.stopPoint;
+		updatedRoute.participants = req.body.participants;
+		updatedRoute.startPoint = req.body.startPoint;
+		updatedRoute.endPoint = req.body.endPoint;
+		updatedRoute.stopPoint = req.body.stopPoint;
 		await updatedRoute.save();
 		res.json({ status: 'Route Updated' });
 	}
@@ -194,7 +177,7 @@ const deleteRoute = async (req: Request, res: Response) => {
 	res.status(200).json({ auth: true });
 };
 
-export default{
+export default {
 	create,
 	newStopPoint,
 	newParticipant,
