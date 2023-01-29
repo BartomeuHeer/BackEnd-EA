@@ -25,7 +25,7 @@ const create = async (req: Request, res: Response) => {
 
 			await newRoute.save();
 
-			data?.updateOne({ "_id": data.id }, { $addToSet: { route: newRoute } });
+			await User.updateOne({_id: data?.id}, {$push: {route: newRoute}});
 
 			res.status(200).json(newRoute);
 
