@@ -10,7 +10,7 @@ import { exec } from 'child_process';
 
 const create = async (req: Request, res: Response) => {
 	try{
-	await User.findOne({email: req.body.creator}).then(async (data) =>{
+	await User.findById(req.body.creator).then(async (data) =>{
 	const startPoint = req.body.startPoint;
 	const endPoint = req.body.endPoint;
 	const stopPoint = req.body.stopPoint;
