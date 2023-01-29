@@ -26,7 +26,7 @@ const create = async (req: Request, res: Response) => {
 
 			await newRoute.save();
 
-			await data?.updateOne({ "_id": data.id }, { $addToSet: { route: newRoute } });
+			await User.updateOne({ "_id": data?.id }, { $push: { route: newRoute } });
 
 
 
@@ -103,7 +103,7 @@ const newRouteInUser = async (req: Request, res: Response) => {
 // GET ALL ROUTES
 
 const getAllRoutes = async (req: Request, res: Response) => {
-	const routes = await Route.find().populate({path: 'creator',populate:{path:'route'}}).populate('participants').populate('startPoint').populate('endPoint').populate('stopPoint');
+	const routes = await Route.find().populate('creator').populate('participants').populate('startPoint').populate('endPoint').populate('stopPoint');
 	res.json(routes);
 };
 

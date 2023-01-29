@@ -64,11 +64,11 @@ const login = async (req: Request, res: Response) => {
 };
 
 const getUserData = async (req: Request, res: Response) => {
-	const user = await User.findOne({ email: req.body.email }).populate({
-		path:'route',
+	const user = await User.findById(req.params.userId).populate({
+		path:'route'/* ,
 		populate: {
 			path : 'creator'
-			}
+			} */
 		}).populate({
 			path:'vehicle',
 			populate: {

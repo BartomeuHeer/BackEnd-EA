@@ -8,7 +8,7 @@ const router = Router();
 
 router.post('/register', userController.register);
 router.post('/login', userController.login);
-router.post('/getUserData', userController.getUserData);
+router.get('/getUserData/:userId', userController.getUserData);
 
 // router.post('/:id/rating/new',userController.newRating);
 // router.get('/',[verifyTokenAdmin], userController.getall);
