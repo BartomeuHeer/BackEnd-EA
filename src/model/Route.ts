@@ -17,16 +17,18 @@ const Route2 = new Schema({
     },
     endPoint: {
         placeName: String,
-        coordinates: [Number]
+        coordinates: [Number],
     },
     stopPoint: [{
         placeName: String,
         coordinates: [Number],
-        price: Number
+        price: Number,
+        duration: Number
     }],
 	dateOfBeggining: Date,
 	price: Number,
-    maxParticipants: Number
+    maxParticipants: Number,
+    duration: Number
 });
 
 export default model('Route', Route2);
