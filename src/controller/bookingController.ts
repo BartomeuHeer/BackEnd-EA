@@ -71,7 +71,7 @@ const createBooking = async (req:Request, res: Response) => {
 		await booking.save();
 		user?.booking.push(booking._id);
 		await user?.save();
-		route?.participants.push(user._id);
+		// route?.participants.push(user._id);
 		await route?.save();
 	}
 	catch(err){
