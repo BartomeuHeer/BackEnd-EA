@@ -10,22 +10,29 @@ import { exec } from 'child_process';
 
 const create = async (req: Request, res: Response) => {
 	try {
-		await User.findOne({ email: req.body.creator }).then(async (data) => {
-			console.log(req.body.stopPoint);
-
-			const stopPoint =  req.body.stopPoint;
+		await User.findById(req.body.creator).then(async (data) => {
 			const startPoint = req.body.startPoint;
-			const endPoint = req.body.endPoint
+			const endPoint = req.body.endPoint;
+			console.log(req.body.startPoint);
+			const stopPoint = req.body.stopPoint;
 			const dateOfBeggining = req.body.dateOfBeggining;
-			const name: string = req.body.creator + startPoint;
+			const name: string = req.body.creator + startPoint + stopPoint;
 			const creator = data;
 			const price = req.body.price;
 			const maxParticipants = req.body.maxParticipants;
-			const newRoute = new Route({ name, creator, startPoint, endPoint, stopPoint, dateOfBeggining, price, maxParticipants });
+			const duration= req.body.duration;
+			console.log(req.body.duration);
+			const newRoute = new Route({ name, creator, startPoint, endPoint, stopPoint, dateOfBeggining, price, maxParticipants, duration});
 
 			await newRoute.save();
 
+<<<<<<< HEAD
 			await User.updateOne({_id: data?.id}, {$push: {route: newRoute}});
+=======
+			await data?.updateOne({ "_id": data.id }, { $addToSet: { route: newRoute } });
+
+
+>>>>>>> 13eb15bca3087588e72db16c026fb72c9221c2a5
 
 			res.status(200).json(newRoute);
 
@@ -100,7 +107,7 @@ const newRouteInUser = async (req: Request, res: Response) => {
 // GET ALL ROUTES
 
 const getAllRoutes = async (req: Request, res: Response) => {
-	const routes = await Route.find().populate('creator').populate('participants').populate('startPoint').populate('endPoint').populate('stopPoint');
+	const routes = await Route.find().populate({path: 'creator',populate:{path:'route'}}).populate('participants').populate('startPoint').populate('endPoint').populate('stopPoint');
 	res.json(routes);
 };
 
