@@ -26,13 +26,7 @@ const create = async (req: Request, res: Response) => {
 
 			await newRoute.save();
 
-<<<<<<< HEAD
 			await User.updateOne({ _id: data?.id }, { $push: { route: newRoute } });
-=======
-			await User.updateOne({ "_id": data?.id }, { $push: { route: newRoute } });
-
-
->>>>>>> 81175d67bc286ee1a566b4f79019a2dd4c827dc6
 
 			res.status(200).json(newRoute);
 
@@ -118,11 +112,7 @@ const  newParticipant= async (req: Request, res: Response) => {
 // GET ALL ROUTES
 
 const getAllRoutes = async (req: Request, res: Response) => {
-<<<<<<< HEAD
 	const routes = await Route.find();
-=======
-	const routes = await Route.find().populate('creator').populate('participants').populate('startPoint').populate('endPoint').populate('stopPoint');
->>>>>>> 81175d67bc286ee1a566b4f79019a2dd4c827dc6
 	res.json(routes);
 };
 
