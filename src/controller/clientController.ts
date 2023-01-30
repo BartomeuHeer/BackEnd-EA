@@ -56,11 +56,12 @@ const login = async (req: Request, res: Response) => {
 		id: user._id.toString(),
 		isAdmin: user.admin
 	};
+	const userId = user.id
 	// let iv = CryptoJS.enc.Hex.parse("FgLFXEr1MZl2mEnk");
 	// secretToken = CryptoJS.AES.encrypt(secretToken,iv).toString();
 	const token = jwt.sign(
 		{ id: user._id, isAdmin: user.admin }, secretToken, { expiresIn: 3600 })
-	res.status(200).json({ user, token });
+	res.status(200).json({ userId, user, token });
 };
 
 const getUserData = async (req: Request, res: Response) => {
@@ -132,7 +133,7 @@ const getProfile = async (req: Request, res: Response) => {
 
 const getall = async (req: Request, res: Response) => {
 	// if(req.body.admin === true){
-	const users = await User.find();
+	const users = await User.find().populate('route');
 	res.json(users);
 	// }
 

@@ -45,12 +45,13 @@ function subtractHours(date:Date, hours: number) {
 
 
 const createBooking = async (req:Request, res: Response) => {
-	const route = await Route.findOne({name:req.body.route});
-	const user = await User.findOne({name: req.body.userName});
+	const route = await Route.findById(req.body.routeId);
+	const user = await User.findById(req.body.userId);
 	if(!user || !route){
 		return res.json(user).status(404);
 	}
 	const price = req.body.price;
+	const duration = req.body.duration;
 	/* const cancelPolicy = {
 		completeRefound: {
 			maxCancelDate: subtractHours(route.dateOfBeggining, 3),
@@ -66,12 +67,12 @@ const createBooking = async (req:Request, res: Response) => {
 		}
 	} */
 	const selectedStopPoint = req.body.selectedStopPoint;
-	const booking = new Booking({route,user,price,selectedStopPoint});
+	const booking = new Booking({route,user,selectedStopPoint,price,duration});
 	try{
 		await booking.save();
 		user?.booking.push(booking._id);
 		await user?.save();
-		// route?.participants.push(user._id);
+		route?.participants.push(user._id);
 		await route?.save();
 	}
 	catch(err){

@@ -9,22 +9,13 @@ const Booking = new Schema({
 		type: Schema.Types.ObjectId,
 		ref: "User"
 	},
-	dayOfCreation: {type: Date, default: Date.now},
-	cancelPolicy:{
-		completRefund:{
-			maxCancelDate: Date,
-			pirceRefound: Number
-		},
-		halfRefund: {
-			maxCancelDate: Date,
-			pirceRefound: Number
-		},
-		noRefund:{
-			maxCancelDate: Date,
-			pirceRefound: Number
-		}
+	dayOfCreation: { type: Date, default: Date.now },
+	selectedStopPoint: {
+		placeName: String,
+		coordinates: [Number],
 	},
-	selectedStopPoint:String
+	price: Number,
+	duration: Number
 });
 
 export default model('Booking', Booking);

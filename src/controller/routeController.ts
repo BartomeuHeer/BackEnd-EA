@@ -20,19 +20,13 @@ const create = async (req: Request, res: Response) => {
 			const creator = data;
 			const price = req.body.price;
 			const maxParticipants = req.body.maxParticipants;
-			const duration= req.body.duration;
+			const duration = req.body.duration;
 			console.log(req.body.duration);
-			const newRoute = new Route({ name, creator, startPoint, endPoint, stopPoint, dateOfBeggining, price, maxParticipants, duration});
+			const newRoute = new Route({ name, creator, startPoint, endPoint, stopPoint, dateOfBeggining, price, maxParticipants, duration });
 
 			await newRoute.save();
 
-<<<<<<< HEAD
-			await User.updateOne({_id: data?.id}, {$push: {route: newRoute}});
-=======
-			await data?.updateOne({ "_id": data.id }, { $addToSet: { route: newRoute } });
-
-
->>>>>>> 13eb15bca3087588e72db16c026fb72c9221c2a5
+			await User.updateOne({ _id: data?.id }, { $push: { route: newRoute } });
 
 			res.status(200).json(newRoute);
 
@@ -66,19 +60,19 @@ const newStopPoint = async (req: Request, res: Response) => {
 
 // PUT NEW PARTICIPANT INTO A ROUTE
 
-const newParticipant = async (req: Request, res: Response) => {
-	console.log("hello");
-	console.log(req.body.id);
-	// console.log(req.body.participant._id);
-	const route = await Route.findById(req.body.id);
+const newRouteInUser = async (req: Request, res: Response) => {
+
+
+	const route = await Route.findById(req.body.routeId);
+	const user = await User.findById(req.body.userId);
 	if (!route) {
 		console.log("holass");
-		return res.status(401).send('Route not found.');
+		return res.status(404).send('Route not found.');
 	}
 	else {
-		const user = await User.findById(req.body.participantId);
 
-		Route.updateOne({ "_id": req.body.id }, { $addToSet: { participants: user } })
+
+		User.updateOne({ "_id": user!.id }, { $push: { route } })
 			.then((data) => {
 				res.status(201).json(data);
 			}).catch((err) => {
@@ -89,14 +83,25 @@ const newParticipant = async (req: Request, res: Response) => {
 
 // PUT NEW ROUTE INTO A USER
 
-const newRouteInUser = async (req: Request, res: Response) => {
-	const user = await User.findById(req.body.id);
-	if (!user) {
+const  newParticipant= async (req: Request, res: Response) => {
+	const user = await User.findById(req.body.userId);
+	const route = await Route.findById(req.body.routeId);
+	if (!user || !route) {
 		return res.status(404).send('No route found.');
 	}
 	else {
-		User.updateOne({ "_id": req.body.id }, { $addToSet: { routes: req.body.route } })
-			.then((data) => {
+		for (const element of route.participants) {
+			if (element === user.id) {
+				console.log(element.id);
+				return res.status(400);
+			}
+
+		}
+		if (route.creator!.id === user.id) {
+			return res.status(400)
+		}
+
+			Route.updateOne({ "_id": route?.id }, { $push: { participants: user } }).then((data) => {
 				res.status(201).json(data);
 			}).catch((err) => {
 				res.status(500).json(err);
@@ -107,7 +112,7 @@ const newRouteInUser = async (req: Request, res: Response) => {
 // GET ALL ROUTES
 
 const getAllRoutes = async (req: Request, res: Response) => {
-	const routes = await Route.find().populate({path: 'creator',populate:{path:'route'}}).populate('participants').populate('startPoint').populate('endPoint').populate('stopPoint');
+	const routes = await Route.find();
 	res.json(routes);
 };
 
@@ -121,9 +126,10 @@ const getFilteredRoutes = async (req: Request, res: Response) => {
 		$and: [
 			{ "startPoint.placeName": req.body.start },
 			{ $or: [{ "stopPoint.placeName": req.body.stop }, { "endPoint.placeName": req.body.stop }] },
-			{ dateOfBeggining: { $gt: startDate, $lt: stopDate } }
+			{ dateOfBeggining: { $gt: startDate, $lt: stopDate } },
+
 		]
-	}).populate("creator").populate("participants")
+	}).populate('creator').populate('participants')
 	res.json(routes);
 }
 
