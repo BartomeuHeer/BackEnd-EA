@@ -40,16 +40,20 @@ app.get('/', ( req: express.Request, res: express.Response ) => {
 })
 
 io.on("connection", (socket: Socket) => {
+	socket.on("room", (roomId)=>{
+		socket.join(roomId);
+	});
+	
 	console.log("***************************************new user connected");
 	socket.on("sendMsg",(msg) => {
-		console.log("===========================================sending message", msg);
-		socket.broadcast.emit("receiveMessage", {...msg, type:"otherMsg"});
+		console.log("==============,=sending message", msg);
+		socket.to("").emit("sendMsgServer", {...msg, type:"otherMsg"});
 	});
 } );
 httpServer.listen(3000);
 
 // Database
-mongoose.connect('mongodb://localhost:27017/users', { useNewUrlParser : true } as ConnectOptions)
+mongoose.connect('mongodb://0.0.0.0:27017/users', { useNewUrlParser : true } as ConnectOptions)
 	.then(() => {
 		// tslint:disable-next-line:no-console
         app.listen(port, () => console.log("Server corriendo en el puerto " + port));
