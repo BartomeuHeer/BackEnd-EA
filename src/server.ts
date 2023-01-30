@@ -40,10 +40,10 @@ app.get('/', ( req: express.Request, res: express.Response ) => {
 })
 
 io.on("connection", (socket: Socket) => {
-	socket.on("room", (roomId)=>{
-		socket.join(roomId);
-	});
-	
+	// socket.on("room", (roomId)=>{
+	// 	socket.join(roomId);
+	// });
+
 	console.log("***************************************new user connected");
 	socket.on("sendMsg",(msg) => {
 		console.log("==============,=sending message", msg);
